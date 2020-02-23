@@ -1,0 +1,19 @@
+# Logs
+logs
+*.log
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+build/Release
+
+# Optional eslint cache
+.eslintcache
+
+# dotenv environment variables file
+.env
+.env.test
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+
+# vscode settings
+.vscode/
