@@ -1,2 +1,2 @@
-# quantiz-server
-Quantiz Server
+# quantiz-api
+Quantiz API Server
