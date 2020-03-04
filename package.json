@@ -1,0 +1,32 @@
+{
+  "name": "quantiz-api",
+  "version": "0.1.0",
+  "description": "Quantiz API",
+  "main": "server.js",
+  "scripts": {
+    "lint": "eslint . --ext .ts",
+    "dev": "npm run lint && nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vnphanquang/quantiz-server.git"
+  },
+  "author": "Quang Phan",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/vnphanquang/quantiz-server/issues"
+  },
+  "homepage": "https://github.com/vnphanquang/quantiz-server#readme",
+  "dependencies": {
+    "@curveball/core": "^0.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^13.7.7",
+    "@typescript-eslint/eslint-plugin": "^2.21.0",
+    "@typescript-eslint/parser": "^2.21.0",
+    "eslint": "^6.8.0",
+    "nodemon": "^2.0.2",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.3"
+  }
+}
