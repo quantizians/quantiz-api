@@ -1,0 +1,23 @@
+[global]
+# workers = [number of cpus * 2]
+# keep_alive = 5
+# limits = { forms = 32768 }
+
+[development]
+log = "normal"
+address = "localhost"
+port = 5555
+# secret_key =
+
+
+[staging]
+log = "normal"
+address = "0.0.0.0"
+port = 8000
+# secret_key =
+
+[production]
+log = "critical"
+address = "0.0.0.0"
+port = 8000
+# secret_key =

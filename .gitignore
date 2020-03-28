@@ -1,3 +1,6 @@
+# vscode settings
+.vscode/
+
 # Logs
 logs
 *.log
@@ -15,5 +18,5 @@ build/Release
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
-# vscode settings
-.vscode/
+# Cargo & Rust sepcifics
+/target
