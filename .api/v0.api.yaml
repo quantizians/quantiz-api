@@ -5,6 +5,16 @@ info:
 servers:
   - url: 'http://localhost:5555'
 paths:
+    /index:
+      get:
+        summary: 'index api endpoint'
+        responses:
+          '200':
+            description: 'OK'
+            content:
+              text/plain:
+                schema:
+                  type: string
 #   /user:
 #     get:
 #       summary: 'Sample endpoint: Returns details about a particular user'
