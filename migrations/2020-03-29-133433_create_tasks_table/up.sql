@@ -1,11 +1,11 @@
 CREATE TABLE tasks (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
   title VARCHAR(50) NOT NULL,
   details TEXT,
-  created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deadline TIMESTAMP,
-  priority SMALLINT CHECK (priority IN (0, 1, 2, 3, 4)) DEFAULT 1,
-  persistent BOOLEAN DEFAULT FALSE,
-  completed BOOLEAN DEFAULT TRUE,
+  created_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
+  deadline TIMESTAMP WITH TIME ZONE,
+  priority SMALLINT NOT NULL CHECK (priority IN (0, 1, 2, 3, 4)) DEFAULT 1,
+  persistent BOOLEAN NOT NULL DEFAULT FALSE,
+  completed BOOLEAN NOT NULL DEFAULT TRUE,
   supertask UUID REFERENCES tasks (id) ON DELETE CASCADE
 );
