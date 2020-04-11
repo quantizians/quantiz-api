@@ -30,6 +30,29 @@ impl ApiEntity for Task {
   }
 }
 
+#[derive(Insertable, Debug, Clone, Serialize, Deserialize)]
+#[table_name="tasks"]
+pub struct NewTask<'a> {
+  pub title: &'a str,
+  pub details: Option<&'a str>,
+  #[serde(with = "nullable_iso_timestamp")]
+  #[serde(default)]
+  pub deadline: Option<NaiveDateTime>,
+  pub priority: Option<Priority>,
+  pub persistent: Option<bool>,
+  pub completed: Option<bool>,
+  pub supertask: Option<Uuid>,
+}
+
+pub struct TaskVec(pub Vec<Task>);
+
+impl ApiEntity for TaskVec {
+  fn to_json_value(&self) -> JsonValue {
+    let TaskVec(tasks) = self;
+    return json!(tasks);
+  }
+}
+
 mod iso_timestamp {
   use chrono::{NaiveDateTime, Utc, TimeZone};
   use serde::{self, Deserialize, Serializer, Deserializer};
@@ -37,26 +60,26 @@ mod iso_timestamp {
   const FORMAT: &'static str = "%Y-%m-%dT%H:%M:%S%.3fZ";
 
   pub fn serialize<S>(
-      date: &NaiveDateTime,
-      serializer: S,
+    date: &NaiveDateTime,
+    serializer: S,
   ) -> Result<S::Ok, S::Error>
   where
-      S: Serializer,
+    S: Serializer,
   {
-      let s = format!("{}", date.format(FORMAT));
-      return serializer.serialize_str(&s);
+    let s = format!("{}", date.format(FORMAT));
+    return serializer.serialize_str(&s);
   }
 
   pub fn deserialize<'de, D>(
-      deserializer: D,
+    deserializer: D,
   ) -> Result<NaiveDateTime, D::Error>
   where
-      D: Deserializer<'de>,
+    D: Deserializer<'de>,
   {
-      let s = String::deserialize(deserializer)?;
-      return Ok(
-        NaiveDateTime::parse_from_str(&s, FORMAT).map_err(serde::de::Error::custom)?
-      );
+    let s = String::deserialize(deserializer)?;
+    return Ok(
+      NaiveDateTime::parse_from_str(&s, FORMAT).map_err(serde::de::Error::custom)?
+    );
   }
 }
 
@@ -71,50 +94,29 @@ mod nullable_iso_timestamp {
     serializer: S
   ) -> Result<S::Ok, S::Error>
   where
-      S: Serializer,
+    S: Serializer,
   {
-      if let Some(ref d) = *date {
-        let s = &d.format(FORMAT).to_string();
-        return serializer.serialize_str(&s);
-      } else {
-        return serializer.serialize_none();
-      }
+    if let Some(ref d) = *date {
+      let s = &d.format(FORMAT).to_string();
+      return serializer.serialize_str(&s);
+    } else {
+      return serializer.serialize_none();
+    }
   }
 
   pub fn deserialize<'de, D>(
     deserializer: D
   ) -> Result<Option<NaiveDateTime>, D::Error>
   where
-      D: Deserializer<'de>,
+    D: Deserializer<'de>,
   {
-      let s: Option<String> = Option::deserialize(deserializer)?;
-      if let Some(s) = s {
-          return Ok(Some(
-            NaiveDateTime::parse_from_str(&s, FORMAT).map_err(serde::de::Error::custom)?,
-          ));
-      } else {
-        return Ok(None);
-      }
-  }
-}
-
-#[derive(Insertable)]
-#[table_name="tasks"]
-pub struct NewTask<'a> {
-  pub title: &'a str,
-  pub details: Option<&'a str>,
-  pub deadline: Option< &'a NaiveDateTime>,
-  pub priority: Option<&'a Priority>,
-  pub persistent: Option<&'a bool>,
-  pub completed: Option<&'a bool>,
-  pub supertask: Option<&'a Uuid>,
-}
-
-pub struct TaskVec(pub Vec<Task>);
-
-impl ApiEntity for TaskVec {
-  fn to_json_value(&self) -> JsonValue {
-    let TaskVec(tasks) = self;
-    return json!(tasks);
+    let s: Option<String> = Option::deserialize(deserializer)?;
+    if let Some(s) = s {
+      return Ok(Some(
+        NaiveDateTime::parse_from_str(&s, FORMAT).map_err(serde::de::Error::custom)?,
+      ));
+    } else {
+      return Ok(None);
+    }
   }
 }

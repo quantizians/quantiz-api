@@ -60,3 +60,17 @@ pub fn Unauthorized(message: ResponseMessage) -> ApiResponse {
 pub fn InvalidUuid() -> ApiResponse {
   return BadRequest(ResponseMessage::Custom("Invalid UUID"));
 }
+
+pub fn AlreadyExists(message: ResponseMessage) -> ApiResponse {
+  let message = match message {
+    ResponseMessage::Custom(m) => m,
+    _ => "Resource Already Exists",
+  };
+  return ApiResponse {
+    data: json!({"error": message}),
+    status: Status {
+      code: 409,
+      reason: "Conflict",
+    },
+  };
+} 

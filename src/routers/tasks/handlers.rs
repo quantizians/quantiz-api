@@ -1,7 +1,7 @@
 use rocket;
 use uuid::Uuid;
 use diesel::prelude::*;
-
+use rocket_contrib::json::{Json, JsonValue};
 use crate::db::DbConnection;
 use crate::db::schema::tasks;
 use crate::models::{Task, TaskVec, NewTask};
@@ -12,15 +12,16 @@ use crate::responses::{
   errors::{
     InvalidUuid,
     InternalServerError,
-    NotFound
+    NotFound,
+    AlreadyExists
   }
 };
 
 #[get("/")]
 fn all(connection: DbConnection) -> ApiResponse {
-    return match tasks::table.load::<Task>(&*connection) {
-        Ok(all_tasks) => Success(TaskVec(all_tasks)),
-        _ => InternalServerError(ResponseMessage::Default),
+    return match tasks::table.order(tasks::columns::created_date.desc()).load::<Task>(&*connection) {
+      Ok(all_tasks) => Success(TaskVec(all_tasks)),
+      _ => InternalServerError(ResponseMessage::Default),
     };
 }
 
@@ -32,21 +33,30 @@ fn get_by_id(id: String, connection: DbConnection) -> ApiResponse {
   };
   
   return match tasks::table.find(id).get_result::<Task>(&*connection) {
-      Ok(task) => Success(task),
-      _ => NotFound(
-        ResponseMessage::Custom(&format!("No task found with id of {}", id))
-      ),
+    Ok(task) => Success(task),
+    _ => NotFound(
+      ResponseMessage::Custom(&format!("No task found with id of {}", id))
+    ),
   };
 }
 
-// #[post("/tasks", data = "<task>")]
-// fn new_task(task: Json<NewTask) {
-
-// }
+// FIXME: catch missing field(s)
+#[post("/", format="json", data = "<task>")]
+fn new(task: Json<NewTask>, connection: DbConnection) -> ApiResponse {
+  let task = task.into_inner();
+  let task = diesel::insert_into(tasks::table)
+    .values(&task)
+    .get_result::<Task>(&*connection);
+  return match task {
+    Ok(task) => Success(task),
+    _ => InternalServerError(ResponseMessage::Default),
+  };
+}
 
 pub fn handlers() -> Vec<rocket::Route> {
   return routes![
     all,
     get_by_id,
+    new,
   ];
 }
