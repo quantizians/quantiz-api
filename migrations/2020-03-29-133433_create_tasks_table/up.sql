@@ -1,6 +1,6 @@
 CREATE TABLE tasks (
   id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
-  title VARCHAR(50) NOT NULL,
+  title VARCHAR(50) NOT NULL DEFAULT 'New Task',
   details TEXT,
   created_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
   deadline TIMESTAMP WITH TIME ZONE,

@@ -23,24 +23,9 @@ pub struct Task {
   pub supertask: Option<Uuid>,
 }
 
-#[derive(Insertable, Debug, Clone, Serialize, Deserialize)]
+#[derive(Insertable, AsChangeset, Debug, Clone, Serialize, Deserialize)]
 #[table_name="tasks"]
 pub struct NewTask<'a> {
-  pub title: &'a str,
-  pub details: Option<&'a str>,
-  #[serde(with = "nullable_iso_timestamp")]
-  #[serde(default)]
-  pub deadline: Option<NaiveDateTime>,
-  pub priority: Option<Priority>,
-  pub persistent: Option<bool>,
-  pub completed: Option<bool>,
-  pub supertask: Option<Uuid>,
-}
-
-#[derive(Identifiable, AsChangeset, Debug, Clone, Serialize, Deserialize)]
-#[table_name="tasks"]
-pub struct TaskInfo<'a> {
-  pub id: Uuid,
   pub title: Option<&'a str>,
   pub details: Option<&'a str>,
   #[serde(with = "nullable_iso_timestamp")]
@@ -51,7 +36,6 @@ pub struct TaskInfo<'a> {
   pub completed: Option<bool>,
   pub supertask: Option<Uuid>,
 }
-
 
 mod iso_timestamp {
   use chrono::{NaiveDateTime, Utc, TimeZone};

@@ -4,7 +4,7 @@ use diesel::prelude::*;
 use rocket_contrib::json::{Json, JsonValue};
 use crate::db::DbConnection;
 use crate::db::schema::tasks;
-use crate::models::{Task, NewTask, TaskInfo};
+use crate::models::{Task, NewTask};
 use crate::responses::{
   ResponseMessage, 
   ApiResponse, 
@@ -42,7 +42,7 @@ fn get_by_id(id: String, connection: DbConnection) -> ApiResponse {
 }
 
 // FIXME: catch missing field(s)
-#[post("/", format="json", data = "<task>")]
+#[post("/", format="json", data="<task>")]
 fn new(task: Json<NewTask>, connection: DbConnection) -> ApiResponse {
   let task = task.into_inner();
   let task = diesel::insert_into(tasks::table)
@@ -62,21 +62,23 @@ fn new(task: Json<NewTask>, connection: DbConnection) -> ApiResponse {
     
 //   }
 // }
-
-#[put("/", format="json", data = "<task>")]
-fn update(task: Option<Json<TaskInfo>>, connection: DbConnection) -> ApiResponse {
+#[put("/?<id>", format="json", data="<task>")]
+fn update(id: String, task: Option<Json<NewTask>>, connection: DbConnection) -> ApiResponse {
+  let id = match Uuid::parse_str(&id) {
+    Ok(id) => id,
+    _ => return InvalidUuid(),
+  };
   let task = match task {
     Some(task) => task,
     _ => return UnprocessableEntity(ResponseMessage::Default),
   };
   let task = task.into_inner();
-  let task = diesel::update(tasks::table).set(&task).get_result::<Task>(&*connection);
+  let task = diesel::update(tasks::table.find(id)).set(&task).get_result::<Task>(&*connection);
   return match task {
     Ok(task) => Success(&task),
     Err(e) => InternalServerError(ResponseMessage::Custom(&e.to_string())),
   };
 }
-
 
 pub fn handlers() -> Vec<rocket::Route> {
   return routes![
