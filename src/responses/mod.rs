@@ -18,4 +18,3 @@ pub fn Success<'a, E: Serialize + Deserialize<'a>>(entity: &E) -> ApiResponse {
     status: Status::Ok,
   }
 }
-

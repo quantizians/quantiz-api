@@ -12,11 +12,33 @@ impl From<DieselError> for ApiResponse {
   }
 }
 
+// use serde_json::Error as SerdeJsonError;
+// impl From<SerdeJsonError> for ApiResponse {
+//   fn from(error: SerdeJsonError) -> Self {
+//     return UnprocessableEntity(
+//       ResponseMessage::Custom(&error.to_string())
+//     );
+//   }
+// }
+
+pub fn UnprocessableEntity(message: ResponseMessage) -> ApiResponse {
+  let message = match message {
+    ResponseMessage::Custom(m) => m,
+    ResponseMessage::Default => "Unprocessable Entity",
+  };
+  return ApiResponse {
+    data: json!({"error": message}),
+    status: Status {
+      code: 422,
+      reason: "Unprocessable Entity"
+    },
+  };
+}
+
 pub fn InternalServerError(message: ResponseMessage) -> ApiResponse {
   let message = match message {    
-
     ResponseMessage::Custom(m) => m,
-    _ => "Internal Server Error",
+    ResponseMessage::Default => "Internal Server Error",
   };
   return ApiResponse {
     data: json!({"error": message}),
@@ -27,7 +49,7 @@ pub fn InternalServerError(message: ResponseMessage) -> ApiResponse {
 pub fn NotFound(message: ResponseMessage) -> ApiResponse {
   let message = match message {
     ResponseMessage::Custom(m) => m,
-    _ => "Not Found",
+    ResponseMessage::Default => "Not Found",
   };
   return ApiResponse {
     data: json!({"error": message}),
@@ -38,7 +60,7 @@ pub fn NotFound(message: ResponseMessage) -> ApiResponse {
 pub fn BadRequest(message: ResponseMessage) -> ApiResponse {
   let message = match message {
     ResponseMessage::Custom(m) => m,
-    _ => "Bad Request",
+    ResponseMessage::Default => "Bad Request",
   };
   return ApiResponse {
     data: json!({"error": message}),
@@ -49,7 +71,7 @@ pub fn BadRequest(message: ResponseMessage) -> ApiResponse {
 pub fn Unauthorized(message: ResponseMessage) -> ApiResponse {
   let message = match message {
     ResponseMessage::Custom(m) => m,
-    _ => "Unauthorized",
+    ResponseMessage::Default => "Unauthorized",
   };
   return ApiResponse {
     data: json!({"error": message}),
@@ -64,7 +86,7 @@ pub fn InvalidUuid() -> ApiResponse {
 pub fn AlreadyExists(message: ResponseMessage) -> ApiResponse {
   let message = match message {
     ResponseMessage::Custom(m) => m,
-    _ => "Resource Already Exists",
+    ResponseMessage::Default => "Resource Already Exists",
   };
   return ApiResponse {
     data: json!({"error": message}),

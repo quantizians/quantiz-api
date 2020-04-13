@@ -2,6 +2,7 @@ use chrono::NaiveDateTime;
 use uuid::Uuid;
 use serde::{Serialize, Deserialize};
 use diesel::prelude::{Queryable, Identifiable, Insertable};
+use diesel::query_builder::AsChangeset;
 use crate::db::schema::tasks;
 use super::Priority;
 
@@ -26,6 +27,21 @@ pub struct Task {
 #[table_name="tasks"]
 pub struct NewTask<'a> {
   pub title: &'a str,
+  pub details: Option<&'a str>,
+  #[serde(with = "nullable_iso_timestamp")]
+  #[serde(default)]
+  pub deadline: Option<NaiveDateTime>,
+  pub priority: Option<Priority>,
+  pub persistent: Option<bool>,
+  pub completed: Option<bool>,
+  pub supertask: Option<Uuid>,
+}
+
+#[derive(Identifiable, AsChangeset, Debug, Clone, Serialize, Deserialize)]
+#[table_name="tasks"]
+pub struct TaskInfo<'a> {
+  pub id: Uuid,
+  pub title: Option<&'a str>,
   pub details: Option<&'a str>,
   #[serde(with = "nullable_iso_timestamp")]
   #[serde(default)]
