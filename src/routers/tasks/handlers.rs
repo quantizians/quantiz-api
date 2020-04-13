@@ -4,7 +4,7 @@ use diesel::prelude::*;
 use rocket_contrib::json::{Json, JsonValue};
 use crate::db::DbConnection;
 use crate::db::schema::tasks;
-use crate::models::{Task, TaskVec, NewTask};
+use crate::models::{Task, NewTask};
 use crate::responses::{
   ResponseMessage, 
   ApiResponse, 
@@ -20,7 +20,7 @@ use crate::responses::{
 #[get("/")]
 fn all(connection: DbConnection) -> ApiResponse {
     return match tasks::table.order(tasks::columns::created_date.desc()).load::<Task>(&*connection) {
-      Ok(all_tasks) => Success(TaskVec(all_tasks)),
+      Ok(all_tasks) => Success(&all_tasks),
       _ => InternalServerError(ResponseMessage::Default),
     };
 }
@@ -33,7 +33,7 @@ fn get_by_id(id: String, connection: DbConnection) -> ApiResponse {
   };
   
   return match tasks::table.find(id).get_result::<Task>(&*connection) {
-    Ok(task) => Success(task),
+    Ok(task) => Success(&task),
     _ => NotFound(
       ResponseMessage::Custom(&format!("No task found with id of {}", id))
     ),
@@ -48,7 +48,7 @@ fn new(task: Json<NewTask>, connection: DbConnection) -> ApiResponse {
     .values(&task)
     .get_result::<Task>(&*connection);
   return match task {
-    Ok(task) => Success(task),
+    Ok(task) => Success(&task),
     _ => InternalServerError(ResponseMessage::Default),
   };
 }

@@ -1,6 +1,8 @@
 use rocket_contrib::json::JsonValue;
+use rocket_contrib::json;
 use rocket::http::Status;
 mod base;
+use serde::{Serialize, Deserialize};
 pub mod errors;
 
 pub use base::ApiResponse;
@@ -10,13 +12,9 @@ pub enum ResponseMessage<'a> {
   Custom(&'a str),
 }
 
-pub trait ApiEntity {
-  fn to_json_value(&self) -> JsonValue;
-}
-
-pub fn Success<E: ApiEntity>(entity: E) -> ApiResponse {
+pub fn Success<'a, E: Serialize + Deserialize<'a>>(entity: &E) -> ApiResponse {
   return ApiResponse {
-    data: entity.to_json_value(),
+    data: json!(entity),
     status: Status::Ok,
   }
 }
