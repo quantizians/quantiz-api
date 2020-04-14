@@ -1,3 +1,4 @@
+#![allow(non_snake_case)]
 use rocket_contrib::json;
 use rocket::http::Status;
 use super::ApiResponse;

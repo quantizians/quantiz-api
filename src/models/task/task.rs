@@ -1,8 +1,7 @@
+#![allow(clippy::redundant_static_lifetimes)]
 use chrono::NaiveDateTime;
 use uuid::Uuid;
 use serde::{Serialize, Deserialize};
-use diesel::prelude::{Queryable, Identifiable, Insertable};
-use diesel::query_builder::AsChangeset;
 use crate::db::schema::tasks;
 use super::Priority;
 
@@ -38,7 +37,7 @@ pub struct NewTask<'a> {
 }
 
 mod iso_timestamp {
-  use chrono::{NaiveDateTime, Utc, TimeZone};
+  use chrono::NaiveDateTime;
   use serde::{self, Deserialize, Serializer, Deserializer};
 
   const FORMAT: &'static str = "%Y-%m-%dT%H:%M:%S%.3fZ";
@@ -68,7 +67,7 @@ mod iso_timestamp {
 }
 
 mod nullable_iso_timestamp {
-  use chrono::{NaiveDateTime, Utc, TimeZone};
+  use chrono::NaiveDateTime;
   use serde::{self, Deserialize, Serializer, Deserializer};
 
   const FORMAT: &'static str = "%Y-%m-%dT%H:%M:%S%.3fZ";

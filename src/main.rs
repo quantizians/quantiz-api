@@ -1,23 +1,20 @@
+#![allow(
+    clippy::needless_return,
+    clippy::module_inception,
+)]
 #![feature(proc_macro_hygiene, decl_macro)]
-
 #[cfg(test)] pub mod tests;
-
+#[macro_use] extern crate diesel;
 #[macro_use] extern crate rocket;
-use rocket::Rocket;
-
 #[macro_use] extern crate rocket_contrib;
-
+use rocket::Rocket;
+use dotenv::dotenv;
 // #[macro_use] extern crate dotenv_codegen;
 // use dotenv_codegen::dotenv;
-use dotenv::dotenv;
-
-#[macro_use] extern crate diesel;
-
 mod db;
 mod models;
 mod routers;
 mod responses;
-
 use db::DbConnection;
 
 fn rocket() -> Rocket {

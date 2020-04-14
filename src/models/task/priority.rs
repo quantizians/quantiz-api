@@ -1,9 +1,8 @@
 use diesel::{
   backend::Backend,
   sql_types::{SmallInt},
-  deserialize::{self, FromSql, FromSqlRow},
+  deserialize::{self, FromSql},
   serialize::{self, Output, ToSql},
-  expression::{AsExpression},
 };
 use std::io::Write;
 use serde::{Serialize, Deserialize};

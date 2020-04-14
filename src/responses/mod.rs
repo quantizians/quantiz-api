@@ -1,4 +1,4 @@
-use rocket_contrib::json::JsonValue;
+#![allow(non_snake_case)]
 use rocket_contrib::json;
 use rocket::http::Status;
 mod base;

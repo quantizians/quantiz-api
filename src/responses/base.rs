@@ -3,20 +3,10 @@ use rocket::response::{self, Response, Responder};
 use rocket::http::{ContentType, Status};
 use rocket::request::Request;
 use std::io::Cursor;
-use super::ResponseMessage;
 
 pub struct ApiResponse {
   pub data: JsonValue,
   pub status: Status,
-}
-
-impl ApiResponse {
-  pub fn new(data: JsonValue, status: Status) -> ApiResponse {
-    return ApiResponse {
-      data,
-      status,
-    };
-  }
 }
 
 impl<'r> Responder<'r> for ApiResponse {

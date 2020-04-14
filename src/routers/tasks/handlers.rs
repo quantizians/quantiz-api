@@ -1,7 +1,6 @@
-use rocket;
 use uuid::Uuid;
 use diesel::prelude::*;
-use rocket_contrib::json::{Json, JsonValue};
+use rocket_contrib::json::Json;
 use crate::db::DbConnection;
 use crate::db::schema::tasks;
 use crate::models::{Task, NewTask};
@@ -13,7 +12,7 @@ use crate::responses::{
     InvalidUuid,
     InternalServerError,
     NotFound,
-    AlreadyExists,
+    // AlreadyExists,
     UnprocessableEntity,
   }
 };
