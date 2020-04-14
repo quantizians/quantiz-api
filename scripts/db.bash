@@ -18,9 +18,12 @@ else
   docker ps | grep -E "IMAGE|$DOCKER_CONTAINER" --color=always
 fi
 
+sleep 2
 # connects to postgres and setup diesel
 # eval $(egrep -v '^#' .env | xargs)
+export DATABASE_URL=$DATABASE_URL
 if diesel setup --database-url $DATABASE_URL; then
   info "connected diesel to $DATABASE_URL"
 fi
+
   
