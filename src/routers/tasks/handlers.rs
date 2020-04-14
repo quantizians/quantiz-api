@@ -26,7 +26,7 @@ fn all(connection: DbConnection) -> ApiResponse {
 }
 
 #[get("/?<id>")]
-fn get_by_id(id: String, connection: DbConnection) -> ApiResponse {
+fn read(id: String, connection: DbConnection) -> ApiResponse {
   let id = match Uuid::parse_str(&id) {
     Ok(id) => id,
     _ => return InvalidUuid(),
@@ -42,7 +42,7 @@ fn get_by_id(id: String, connection: DbConnection) -> ApiResponse {
 
 // FIXME: catch missing field(s)
 #[post("/", format="json", data="<task>")]
-fn new(task: Json<NewTask>, connection: DbConnection) -> ApiResponse {
+fn create(task: Json<NewTask>, connection: DbConnection) -> ApiResponse {
   let task = task.into_inner();
   let task = diesel::insert_into(tasks::table)
     .values(&task)
@@ -65,7 +65,7 @@ fn new(task: Json<NewTask>, connection: DbConnection) -> ApiResponse {
 fn update(id: String, task: Option<Json<NewTask>>, connection: DbConnection) -> ApiResponse {
   let id = match Uuid::parse_str(&id) {
     Ok(id) => id,
-    _ => return InvalidUuid(),
+    _ => return InvalidUuid(), 
   };
   let task = match task {
     Some(task) => task,
@@ -79,11 +79,25 @@ fn update(id: String, task: Option<Json<NewTask>>, connection: DbConnection) -> 
   };
 }
 
+#[delete("/?<id>")]
+fn delete(id: String, connection: DbConnection) -> ApiResponse {
+  let id = match Uuid::parse_str(&id) {
+    Ok(id) => id,
+    _ => return InvalidUuid(),
+  };
+  let task = diesel::delete(tasks::table.filter(tasks::columns::id.eq(id))).get_result::<Task>(&*connection);
+  return match task {
+    Ok(task) => Success(&task),
+    Err(e) => InternalServerError(ResponseMessage::Custom(&e.to_string())),
+  }
+}
+
 pub fn handlers() -> Vec<rocket::Route> {
   return routes![
     all,
-    get_by_id,
-    new,
-    update,
+    create, // C
+    read,   // R
+    update, // U
+    delete, // D
   ];
 }
