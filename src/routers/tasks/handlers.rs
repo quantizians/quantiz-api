@@ -3,7 +3,7 @@ use diesel::prelude::*;
 use rocket_contrib::json::Json;
 use crate::db::DbConnection;
 use crate::db::schema::tasks;
-use crate::models::{Task, NewTask};
+use crate::models::{Task, OptionalizedTask};
 use crate::responses::{
   ResponseMessage, 
   ApiResponse, 
@@ -42,7 +42,7 @@ fn read(id: String, connection: DbConnection) -> ApiResponse {
 
 // FIXME: catch missing field(s)
 #[post("/", format="json", data="<task>")]
-fn create(task: Json<NewTask>, connection: DbConnection) -> ApiResponse {
+fn create(task: Json<OptionalizedTask>, connection: DbConnection) -> ApiResponse {
   let task = task.into_inner();
   let task = diesel::insert_into(tasks::table)
     .values(&task)
@@ -62,7 +62,7 @@ fn create(task: Json<NewTask>, connection: DbConnection) -> ApiResponse {
 //   }
 // }
 #[put("/?<id>", format="json", data="<task>")]
-fn update(id: String, task: Option<Json<NewTask>>, connection: DbConnection) -> ApiResponse {
+fn update(id: String, task: Option<Json<OptionalizedTask>>, connection: DbConnection) -> ApiResponse {
   let id = match Uuid::parse_str(&id) {
     Ok(id) => id,
     _ => return InvalidUuid(), 

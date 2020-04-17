@@ -5,7 +5,6 @@ use serde::{Serialize, Deserialize};
 use crate::db::schema::tasks;
 use super::Priority;
 
-
 #[derive(Queryable, Identifiable, Debug, Clone, Serialize, Deserialize)]
 #[table_name="tasks"]
 pub struct Task {
@@ -24,9 +23,13 @@ pub struct Task {
 
 #[derive(Insertable, AsChangeset, Debug, Clone, Serialize, Deserialize)]
 #[table_name="tasks"]
-pub struct NewTask<'a> {
+pub struct OptionalizedTask<'a> {
+  pub id: Option<Uuid>,
   pub title: Option<&'a str>,
   pub details: Option<&'a str>,
+  #[serde(with = "nullable_iso_timestamp")]
+  #[serde(default)]
+  pub created_date: Option<NaiveDateTime>,
   #[serde(with = "nullable_iso_timestamp")]
   #[serde(default)]
   pub deadline: Option<NaiveDateTime>,
