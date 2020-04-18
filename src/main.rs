@@ -18,7 +18,7 @@ mod responses;
 use db::DbConnection;
 
 fn rocket() -> Rocket {
-    let api_version = std::env::var("API_VERSION").unwrap();
+    let api_version = std::env::var("API_VERSION").expect("invalid API version");
     let server_root = format!("/api/{}", api_version);
     return rocket::ignite()
         .attach(DbConnection::fairing())
