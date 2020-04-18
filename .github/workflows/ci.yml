@@ -1,0 +1,66 @@
+name: Continuous Integration Configuration
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    container: 
+      image: alpine   
+    env:
+      POSTGRES_USER: quantiz
+      POSTGRES_DB: quantiz
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: localhost
+      DATABASE_URL: 'postgres://${{env.POSTGRES_USER}}:${{env.POSTGRES_PASSWORD}}@${{POSTGRES_HOST}}:${{env.POSTGRES_PORT}}/${{POSTGRES_DB}}'
+      API_VERSION: v0
+      ROCKET_DATABASES: '{quantiz_db={url="${{env.DATABASE_URL}}"}}'
+    services:
+      postgres:
+        image: postgres:alpine
+        env:
+          POSTGRES_USER: ${{env.POSTGRES_USER}}
+          POSTGRES_DB: ${{env.POSTGRES_DB}}
+          POSTGRES_PASSWORD: ${{env.POSTGRES_PASSWORD}}
+        ports:
+          - '${{env.POSTGRES_PORT}}::${{env.POSTGRES_PORT}}'
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+    - uses: actions/checkout@v2
+    - name: Print all env vars
+      run: |
+        echo $POSTGRES_USER
+        echo $POSTGRES_DB
+        echo $POSTGRES_PASSWORD
+        echo $POSTGRES_PORT
+        echo $POSTGRES_HOST
+        echo $DATABASE_URL
+        echo $API_VERSION
+        echo $ROCKET_DATABASES
+    - name: Install latest nightly
+      uses: actions-rs/toolchain@v1
+      with:
+          toolchain: nightly
+          override: true
+          components: clippy
+    - name: Install diesel CLI
+      run: cargo install diesel_cli
+    - name: Hook up diesel -> postgres
+      run: diesel setup
+      env:
+        DATABASE_URL: ${{env.DATABASE_URL}}
+    - name: Build
+      run: cargo build --verbose
+      env:
+        ROCKET_DATABASES: ${{env.ROCKET_DATABASES}}
+    - name: Run tests
+      run: cargo test --verbose
+      env:
+        ROCKET_DATABASES: ${{env.ROCKET_DATABASES}}
+        
