@@ -16,8 +16,6 @@ env:
 jobs:
   ci:
     runs-on: ubuntu-latest
-    container: 
-      image: node:latest   
     services:
       postgres:
         image: postgres:latest
@@ -25,6 +23,7 @@ jobs:
           POSTGRES_USER: ${{env.POSTGRES_USER}}
           POSTGRES_DB: ${{env.POSTGRES_DB}}
           POSTGRES_PASSWORD: ${{env.POSTGRES_PASSWORD}}
+          - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
