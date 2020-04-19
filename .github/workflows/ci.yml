@@ -56,8 +56,3 @@ jobs:
       run: cargo build --verbose
     - name: Run tests
       run: cargo test --verbose
-        
-
-  DATABASE_URL: 'postgres://${{env.POSTGRES_USER}}:${{env.POSTGRES_PASSWORD}}@${{POSTGRES_HOST}}:${{env.POSTGRES_PORT}}/${{POSTGRES_DB}}'
-  ROCKET_DATABASES: '{quantiz_db={url="${{env.DATABASE_URL}}"}}'
-    
