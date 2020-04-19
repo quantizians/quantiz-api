@@ -54,7 +54,7 @@ impl From<Task> for OptionalizedTask {
       title: Some(task.title),
       details: task.details,
       created_date: Some(task.created_date),
-      updated_date: Some(task.created_date),
+      updated_date: task.updated_date,
       deadline: task.deadline,
       priority: Some(task.priority),
       persistent: Some(task.persistent),
