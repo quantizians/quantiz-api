@@ -17,10 +17,10 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     container: 
-      image: alpine   
+      image: node:latest   
     services:
       postgres:
-        image: postgres:alpine
+        image: postgres:latest
         env:
           POSTGRES_USER: ${{env.POSTGRES_USER}}
           POSTGRES_DB: ${{env.POSTGRES_DB}}
@@ -35,12 +35,12 @@ jobs:
       run: |
         echo "::set-env name=DATABASE_URL::postgres://${{env.POSTGRES_USER}}:${{env.POSTGRES_PASSWORD}}@${{env.POSTGRES_HOST}}:${{env.POSTGRES_PORT}}/${{env.POSTGRES_DB}}"
         echo "::set-env name=ROCKET_DATABASES::{quantiz_db={url="${{env.DATABASE_URL}}"}}"
-    # - name: Install latest nightly
-    #   uses: actions-rs/toolchain@v1
-    #   with:
-    #       toolchain: nightly
-    #       components: clippy
-    #       override: true
+    - name: Install latest nightly
+      uses: actions-rs/toolchain@v1
+      with:
+          toolchain: nightly
+          components: clippy
+          override: true
     - name: Install diesel CLI
       uses: actions-rs/cargo@v1
       with:
