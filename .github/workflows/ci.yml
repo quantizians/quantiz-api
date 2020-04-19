@@ -39,13 +39,13 @@ jobs:
           toolchain: nightly
           components: clippy
           override: true
-    - name: Install diesel CLI
-      uses: actions-rs/cargo@v1
-      with:
-        command: install
-        args: diesel_cli
-    - name: Hook up diesel -> postgres
-      run: diesel setup --database-url=$DATABASE_URL
+    # - name: Install diesel CLI
+    #   uses: actions-rs/cargo@v1
+    #   with:
+    #     command: install
+    #     args: diesel_cli
+    # - name: Hook up diesel -> postgres
+    #   run: diesel setup --database-url=$DATABASE_URL
     - name: Build
       uses: actions-rs/cargo@v1
       with:
