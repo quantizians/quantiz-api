@@ -17,7 +17,7 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     container: 
-      image: node12_alpine   
+      image: node:alpine   
     services:
       postgres:
         image: postgres:alpine
