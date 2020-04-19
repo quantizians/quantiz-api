@@ -6,18 +6,22 @@ on:
   pull_request:
     branches: [ master, develop ]
 
+env:
+  POSTGRES_USER: quantiz
+  POSTGRES_DB: quantiz
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  POSTGRES_PORT: 5432
+  POSTGRES_HOST: localhost
+  API_VERSION: v0
+  DATABASE_URL: 'postgres://${{env.POSTGRES_USER}}:${{env.POSTGRES_PASSWORD}}@${{POSTGRES_HOST}}:${{env.POSTGRES_PORT}}/${{POSTGRES_DB}}'
+  API_VERSION: v0
+  ROCKET_DATABASES: '{quantiz_db={url="${{env.DATABASE_URL}}"}}'
+
 jobs:
   ci:
     runs-on: ubuntu-latest
     container: 
       image: alpine   
-    env:
-      POSTGRES_USER: quantiz
-      POSTGRES_DB: quantiz
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_PORT: 5432:5432
-      POSTGRES_HOST: localhost
-      API_VERSION: v0
     services:
       postgres:
         image: postgres:alpine
@@ -26,11 +30,21 @@ jobs:
           POSTGRES_DB: ${{env.POSTGRES_DB}}
           POSTGRES_PASSWORD: ${{env.POSTGRES_PASSWORD}}
         ports:
-          - ${{env.POSTGRES_PORT}}
+          - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - uses: actions/checkout@v2
+    - name: Set environment variables
+      run: |
+        echo $POSTGRES_USER
+        echo $POSTGRES_DB
+        echo $POSTGRES_PASSWORD
+        echo $POSTGRES_PORT
+        echo $POSTGRES_HOST
+        echo $DATABASE_URL
+        echo $API_VERSION
+        echo $ROCKET_DATABASES
     - name: Install latest nightly
       uses: actions-rs/toolchain@v1
       with:
