@@ -13,10 +13,6 @@ env:
   POSTGRES_PORT: 5432
   POSTGRES_HOST: localhost
   API_VERSION: v0
-  DATABASE_URL: 'postgres://${{env.POSTGRES_USER}}:${{env.POSTGRES_PASSWORD}}@${{POSTGRES_HOST}}:${{env.POSTGRES_PORT}}/${{POSTGRES_DB}}'
-  API_VERSION: v0
-  ROCKET_DATABASES: '{quantiz_db={url="${{env.DATABASE_URL}}"}}'
-
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -44,7 +40,8 @@ jobs:
         echo $POSTGRES_HOST
         echo $DATABASE_URL
         echo $API_VERSION
-        echo $ROCKET_DATABASES
+        echo "::set-env name=DATABASE_URL::postgres://${{env.POSTGRES_USER}}:${{env.POSTGRES_PASSWORD}}@${{POSTGRES_HOST}}:${{env.POSTGRES_PORT}}/${{POSTGRES_DB}}"
+        echo "::set-env name=ROCKET_DATABASES::{quantiz_db={url="${{env.DATABASE_URL}}"}}"
     - name: Install latest nightly
       uses: actions-rs/toolchain@v1
       with:
@@ -60,3 +57,7 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
         
+
+  DATABASE_URL: 'postgres://${{env.POSTGRES_USER}}:${{env.POSTGRES_PASSWORD}}@${{POSTGRES_HOST}}:${{env.POSTGRES_PORT}}/${{POSTGRES_DB}}'
+  ROCKET_DATABASES: '{quantiz_db={url="${{env.DATABASE_URL}}"}}'
+    
