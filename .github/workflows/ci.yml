@@ -1,6 +1,8 @@
 name: github ci
 
 on:
+  push:
+    branches: [ develop ]
   pull_request:
     branches: [ master, develop ]
 
@@ -46,4 +48,15 @@ jobs:
       uses: actions-rs/cargo@v1
       with:
         command: test
-        args: --verbose
+        args: --verbose --no-fail-fast --all-features
+      env:
+        CARGO_INCREMENTAL: '0'
+        RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Zno-landing-pads'
+    - id: grcov
+      uses: actions-rs/grcov@v0.1
+    - name: Upload Codecov report 
+      if: github.event_name == 'push'
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.xml
