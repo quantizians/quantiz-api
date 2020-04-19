@@ -33,13 +33,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set environment variables
       run: |
-        echo $POSTGRES_USER
-        echo $POSTGRES_DB
-        echo $POSTGRES_PASSWORD
-        echo $POSTGRES_PORT
-        echo $POSTGRES_HOST
-        echo $DATABASE_URL
-        echo $API_VERSION
         echo "::set-env name=DATABASE_URL::postgres://${{env.POSTGRES_USER}}:${{env.POSTGRES_PASSWORD}}@${{POSTGRES_HOST}}:${{env.POSTGRES_PORT}}/${{POSTGRES_DB}}"
         echo "::set-env name=ROCKET_DATABASES::{quantiz_db={url="${{env.DATABASE_URL}}"}}"
     - name: Install latest nightly
