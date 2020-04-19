@@ -31,16 +31,6 @@ jobs:
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
     - uses: actions/checkout@v2
-    - name: Print all env vars
-      run: |
-      echo $POSTGRES_USER
-      echo $POSTGRES_DB
-      echo $POSTGRES_PASSWORD
-      echo $POSTGRES_PORT
-      echo $POSTGRES_HOST
-      echo $DATABASE_URL
-      echo $API_VERSION
-      echo $ROCKET_DATABASES
     - name: Install latest nightly
       uses: actions-rs/toolchain@v1
       with:
