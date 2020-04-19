@@ -19,6 +19,7 @@ fn sample_op_task() -> OptionalizedTask {
     title: Some(String::from("(Test) title")),
     details: Some(String::from("(Test) details")),
     created_date: Some(NaiveDate::from_ymd(2016, 7, 8).and_hms(9, 10, 11)),
+    updated_date: None,
     deadline: Some(NaiveDate::from_ymd(2020, 7, 8).and_hms(9, 10, 11)),
     priority: Some(Priority::High),
     persistent: Some(true),
@@ -51,6 +52,14 @@ fn json_to_task(res: &mut LocalResponse) -> Task {
 // transaction so we can regain concurrency.
 static DB_LOCK: Mutex<()> = Mutex::new(());
 
+macro_rules! assert_response_task {
+  (mut $op_task:ident, &mut $res:ident) => {
+    let task = json_to_task(&mut $res);
+    $op_task.updated_date = task.updated_date;
+    assert_eq!($op_task, task, "response task should be same as sample");
+  }
+}
+
 macro_rules! test_task {
   (|$client:ident, $conn:ident, $op_task:ident| $block:expr) => ({
     #![allow(unused_mut)]
@@ -73,20 +82,15 @@ macro_rules! test_task {
     if (res.status() != Status::Ok) {
       panic_on_http_error(&mut res, true);
     }
-    // parse back into task
-    let task = json_to_task(&mut res);
-    // should be same task
-    assert_eq!($op_task, task, "created task should be same as sample");
+    // check response task
+    assert_response_task!(mut $op_task, &mut res);
     
     $block;
 
     // delete sample task from db
     let mut res = delete(&$client, &$op_task);
     if (res.status() == Status::Ok) {
-      // parse back into task
-      let task = json_to_task(&mut res);
-      // should be same task
-      assert_eq!($op_task, task, "deleted task should be same as sample");
+      assert_response_task!(mut $op_task, &mut res);
     } else {
       // get the response error message
       let http_error = panic_on_http_error(&mut res, false);
@@ -96,7 +100,10 @@ macro_rules! test_task {
         tasks::table.filter(tasks::columns::id.eq(id))
       ).get_result::<Task>(&*$conn);
       match task {
-        Ok(task) => assert_eq!(task, $op_task, "deleted task should be same as sample"),
+        Ok(task) => {
+          $op_task.updated_date = task.updated_date;
+          assert_eq!($op_task, task, "response task should be same as sample");
+        },
         Err(e) => panic!(
           "failed to delete task both by http request and db connection,\
           \nhttp response: {},\
@@ -165,9 +172,7 @@ fn test_read() {
     if res.status() != Status::Ok {
       panic_on_http_error(&mut res, true);
     }
-    let task = json_to_task(&mut res);
-    // should be same task
-    assert_eq!(op_task, task, "read task should be same as sample");
+    assert_response_task!(mut op_task, &mut res);
   });
 }
 
@@ -183,8 +188,6 @@ fn test_update() {
     if res.status() != Status::Ok {
       panic_on_http_error(&mut res, true);
     }
-    let task = json_to_task(&mut res);
-    // should be same task
-    assert_eq!(op_task, task, "updated task should be same as sample");
+    assert_response_task!(mut op_task, &mut res);
   });
 }
