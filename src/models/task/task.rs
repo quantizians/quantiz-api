@@ -17,6 +17,8 @@ pub struct Task {
   #[serde(with = "iso_timestamp")]
   pub created_date: NaiveDateTime,
   #[serde(with = "nullable_iso_timestamp")]
+  pub updated_date: Option<NaiveDateTime>,
+  #[serde(with = "nullable_iso_timestamp")]
   pub deadline: Option<NaiveDateTime>,
   pub priority: Priority,
   pub persistent: bool,
@@ -35,6 +37,9 @@ pub struct OptionalizedTask {
   pub created_date: Option<NaiveDateTime>,
   #[serde(with = "nullable_iso_timestamp")]
   #[serde(default)]
+  pub updated_date: Option<NaiveDateTime>,
+  #[serde(with = "nullable_iso_timestamp")]
+  #[serde(default)]
   pub deadline: Option<NaiveDateTime>,
   pub priority: Option<Priority>,
   pub persistent: Option<bool>,
@@ -49,6 +54,7 @@ impl From<Task> for OptionalizedTask {
       title: Some(task.title),
       details: task.details,
       created_date: Some(task.created_date),
+      updated_date: Some(task.created_date),
       deadline: task.deadline,
       priority: Some(task.priority),
       persistent: Some(task.persistent),
