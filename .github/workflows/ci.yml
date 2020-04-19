@@ -46,6 +46,8 @@ jobs:
       with:
         command: install
         args: diesel_cli
+    - name: Start up Postgres Docker
+      run: ./scripts/db.bash
     - name: Hook up diesel -> postgres
       run: diesel setup --database-url=$DATABASE_URL
     - name: Build
