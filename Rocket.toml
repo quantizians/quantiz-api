@@ -7,9 +7,6 @@
 log = "normal"
 address = "localhost"
 port = 5555
-# secret_key =
-# [development.databases]
-# quantiz_db = { url = "postgres://quantiz:quantiz@localhost:5432/quantiz" }
 
 [staging]
 log = "normal"
