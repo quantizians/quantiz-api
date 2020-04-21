@@ -21,9 +21,9 @@ fn sample_op_task() -> OptionalizedTask {
     created_date: Some(NaiveDate::from_ymd(2016, 7, 8).and_hms(9, 10, 11)),
     updated_date: None,
     deadline: Some(NaiveDate::from_ymd(2020, 7, 8).and_hms(9, 10, 11)),
+    completed_date: None,
     priority: Some(Priority::High),
     persistent: Some(true),
-    completed: Some(false),
     supertask: None,
   };
 }
@@ -180,8 +180,9 @@ fn test_read() {
 fn test_update() {
   test_task!(|client, conn, op_task| {
     // make some change to task
-    op_task.completed = Some(true);
+    op_task.priority = Some(Priority::Medium);
     op_task.details = Some(String::from("(Test) changed details"));
+    op_task.completed_date = Some(NaiveDate::from_ymd(2019, 12, 12).and_hms(9, 10, 11));
     // send PUT request
     let mut res = update(&client, &op_task);
     // should receive 200
