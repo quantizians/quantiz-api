@@ -5,9 +5,9 @@ CREATE TABLE tasks (
   created_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT (now() AT TIME ZONE 'utc'),
   updated_date TIMESTAMP WITH TIME ZONE,
   deadline TIMESTAMP WITH TIME ZONE,
+  completed_date TIMESTAMP WITH TIME ZONE,
   priority SMALLINT NOT NULL CHECK (priority IN (0, 1, 2, 3, 4)) DEFAULT 1,
   persistent BOOLEAN NOT NULL DEFAULT FALSE,
-  completed BOOLEAN NOT NULL DEFAULT TRUE,
   supertask UUID REFERENCES tasks (id) ON DELETE CASCADE
 );
 
