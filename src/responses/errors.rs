@@ -43,7 +43,7 @@ pub fn InternalServerError(message: ResponseMessage) -> ApiResponse {
   };
   return ApiResponse {
     data: json!({"error": message}),
-    status: Status::InternalServerError,
+    status: Status::InternalServerError, // 500
   };
 }
 
@@ -54,7 +54,7 @@ pub fn NotFound(message: ResponseMessage) -> ApiResponse {
   };
   return ApiResponse {
     data: json!({"error": message}),
-    status: Status::NotFound,
+    status: Status::NotFound, // 404
   };
 }
 
@@ -65,18 +65,7 @@ pub fn BadRequest(message: ResponseMessage) -> ApiResponse {
   };
   return ApiResponse {
     data: json!({"error": message}),
-    status: Status::BadRequest,
-  };
-}
-
-pub fn Unauthorized(message: ResponseMessage) -> ApiResponse {
-  let message = match message {
-    ResponseMessage::Custom(m) => m,
-    ResponseMessage::Default => "Unauthorized",
-  };
-  return ApiResponse {
-    data: json!({"error": message}),
-    status: Status::Unauthorized,
+    status: Status::BadRequest, // 400
   };
 }
 
@@ -84,16 +73,38 @@ pub fn InvalidUuid() -> ApiResponse {
   return BadRequest(ResponseMessage::Custom("Invalid UUID"));
 }
 
-pub fn AlreadyExists(message: ResponseMessage) -> ApiResponse {
-  let message = match message {
-    ResponseMessage::Custom(m) => m,
-    ResponseMessage::Default => "Resource Already Exists",
-  };
-  return ApiResponse {
-    data: json!({"error": message}),
-    status: Status {
-      code: 409,
-      reason: "Conflict",
-    },
-  };
-} 
+// pub fn AlreadyExists(message: ResponseMessage) -> ApiResponse {
+//   let message = match message {
+//     ResponseMessage::Custom(m) => m,
+//     ResponseMessage::Default => "Resource Already Exists",
+//   };
+//   return ApiResponse {
+//     data: json!({"error": message}),
+//     status: Status {
+//       code: 409,
+//       reason: "Conflict",
+//     },
+//   };
+// } 
+
+// pub fn Unauthenticated(message: ResponseMessage) -> ApiResponse {
+//   let message = match message {
+//     ResponseMessage::Custom(m) => m,
+//     ResponseMessage::Default => "Unauthorized",
+//   };
+//   return ApiResponse {
+//     data: json!({"error": message}),
+//     status: Status::Unauthorized, // 401
+//   };
+// }
+
+// pub fn Unauthorized(message: ResponseMessage) -> ApiResponse {
+//   let message = match message {
+//     ResponseMessage::Custom(m) => m,
+//     ResponseMessage::Default => "Unauthorized",
+//   };
+//   return ApiResponse {
+//     data: json!({"error": message}),
+//     status: Status::Forbidden, // 403
+//   };
+// }
