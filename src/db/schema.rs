@@ -3,12 +3,12 @@ table! {
         id -> Uuid,
         title -> Varchar,
         details -> Nullable<Text>,
-        created_date -> Timestamptz,
-        updated_date -> Nullable<Timestamptz>,
+        created_timestamp -> Timestamptz,
+        updated_timestamp -> Nullable<Timestamptz>,
         deadline -> Nullable<Timestamptz>,
+        completed_timestamp -> Nullable<Timestamptz>,
         priority -> Int2,
         persistent -> Bool,
-        completed -> Bool,
         supertask -> Nullable<Uuid>,
     }
 }

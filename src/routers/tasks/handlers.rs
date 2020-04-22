@@ -13,13 +13,15 @@ use crate::responses::{
     InternalServerError,
     NotFound,
     // AlreadyExists,
+    // Unauthenticated,
+    // Unauthorized,
     UnprocessableEntity,
   }
 };
 
 #[get("/")]
 fn all(connection: DbConnection) -> ApiResponse {
-    return match tasks::table.order(tasks::columns::created_date.desc()).load::<Task>(&*connection) {
+    return match tasks::table.order(tasks::columns::created_timestamp.desc()).load::<Task>(&*connection) {
       Ok(all_tasks) => Success(&all_tasks),
       Err(e) => InternalServerError(ResponseMessage::Custom(&e.to_string())),
     };

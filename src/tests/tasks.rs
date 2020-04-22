@@ -18,12 +18,12 @@ fn sample_op_task() -> OptionalizedTask {
     id: Some(Uuid::parse_str("550e8400-e29b-41d4-a716-446655440000").unwrap()),
     title: Some(String::from("(Test) title")),
     details: Some(String::from("(Test) details")),
-    created_date: Some(NaiveDate::from_ymd(2016, 7, 8).and_hms(9, 10, 11)),
-    updated_date: None,
+    created_timestamp: Some(NaiveDate::from_ymd(2016, 7, 8).and_hms(9, 10, 11)),
+    updated_timestamp: None,
     deadline: Some(NaiveDate::from_ymd(2020, 7, 8).and_hms(9, 10, 11)),
+    completed_timestamp: None,
     priority: Some(Priority::High),
     persistent: Some(true),
-    completed: Some(false),
     supertask: None,
   };
 }
@@ -55,7 +55,7 @@ static DB_LOCK: Mutex<()> = Mutex::new(());
 macro_rules! assert_response_task {
   (mut $op_task:ident, &mut $res:ident) => {
     let task = json_to_task(&mut $res);
-    $op_task.updated_date = task.updated_date;
+    $op_task.updated_timestamp = task.updated_timestamp;
     assert_eq!($op_task, task, "response task should be same as sample");
   }
 }
@@ -101,7 +101,7 @@ macro_rules! test_task {
       ).get_result::<Task>(&*$conn);
       match task {
         Ok(task) => {
-          $op_task.updated_date = task.updated_date;
+          $op_task.updated_timestamp = task.updated_timestamp;
           assert_eq!($op_task, task, "response task should be same as sample");
         },
         Err(e) => panic!(
@@ -180,8 +180,9 @@ fn test_read() {
 fn test_update() {
   test_task!(|client, conn, op_task| {
     // make some change to task
-    op_task.completed = Some(true);
+    op_task.priority = Some(Priority::Medium);
     op_task.details = Some(String::from("(Test) changed details"));
+    op_task.completed_timestamp = Some(NaiveDate::from_ymd(2019, 12, 12).and_hms(9, 10, 11));
     // send PUT request
     let mut res = update(&client, &op_task);
     // should receive 200
