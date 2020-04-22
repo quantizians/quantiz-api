@@ -5,6 +5,7 @@ Quantiz Server
 [![codecov](https://codecov.io/gh/quantizians/quantiz-api/branch/develop/graph/badge.svg)](https://codecov.io/gh/quantizians/quantiz-api)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![OpenAPI 3](https://img.shields.io/badge/OpenAPI-v3-orange)](https://swagger.io/specification/)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 [![](https://img.shields.io/github/issues/quantizians/quantiz-api)](https://github.com/Quantizians/quantiz-api/issues)
 [![](https://img.shields.io/github/issues-pr/quantizians/quantiz-api)](https://github.com/Quantizians/quantiz-api/pullshttps://github.com/Quantizians/quantiz-api/issues)
 [![](https://img.shields.io/github/commit-activity/m/quantizians/quantiz-api)](https://github.com/quantizians/quantiz-api/graphs/commit-activity)
