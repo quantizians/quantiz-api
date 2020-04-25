@@ -1,22 +1,24 @@
-#![allow(
-    clippy::needless_return,
-    clippy::module_inception,
-)]
+#![allow(clippy::needless_return, clippy::module_inception)]
 #![feature(proc_macro_hygiene, decl_macro)]
-#[cfg(test)] pub mod tests;
-#[macro_use] extern crate diesel;
-#[macro_use] extern crate diesel_migrations;
-#[macro_use] extern crate rocket;
-#[macro_use] extern crate rocket_contrib;
-use rocket::Rocket;
-use rocket::fairing::AdHoc;
+#[cfg(test)]
+pub mod tests;
+#[macro_use]
+extern crate diesel;
+#[macro_use]
+extern crate diesel_migrations;
+#[macro_use]
+extern crate rocket;
+#[macro_use]
+extern crate rocket_contrib;
 use dotenv::dotenv;
+use rocket::fairing::AdHoc;
+use rocket::Rocket;
 // #[macro_use] extern crate dotenv_codegen;
 // use dotenv_codegen::dotenv;
 mod db;
 mod models;
-mod routers;
 mod responses;
+mod routers;
 use db::DbConnection;
 
 // This macro from `diesel_migrations` defines an `embedded_migrations` module
@@ -41,8 +43,8 @@ fn rocket() -> Rocket {
         .attach(DbConnection::fairing())
         .attach(AdHoc::on_attach("Database Migrations", run_db_migrations))
         .mount(
-            &routers::tasks::root(&server_root), 
-            routers::tasks::handlers()
+            &routers::tasks::root(&server_root),
+            routers::tasks::handlers(),
         );
 }
 
@@ -63,8 +65,8 @@ fn main() {
 }
 
 // fn rocket_db() -> Rocket {
-    // use rocket::config::{Config, Environment, Value};
-    // use std::collections::HashMap;
+// use rocket::config::{Config, Environment, Value};
+// use std::collections::HashMap;
 //     // loads in env vars from .env
 //     dotenv().ok();
 //     // Procedurally configs database
@@ -73,12 +75,12 @@ fn main() {
 //     let mut databases = HashMap::new();
 //     let database_url = std::env::var("DATABASE_URL").unwrap();
 //     database_config.insert(
-//         "url", 
+//         "url",
 //         Value::from(database_url)
 //     );
 
 //     databases.insert(
-//         "quantiz_db", 
+//         "quantiz_db",
 //         Value::from(database_config)
 //     );
 //     let env = Environment::active().unwrap();
