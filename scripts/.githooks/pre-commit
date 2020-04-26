@@ -16,34 +16,34 @@ fi
 PASS=true
 
 # --------lint & format--------
-info "\n🦀 Validating Rust files:"
+info "🦀 Validating Rust files:"
 # check for cargo
 which cargo &> /dev/null
 if [[ "$?" == 1 ]]; then
-  error "\n❌ Cargo not found. Consider checking your Rust installation"
+  error "🤔 Cargo not found. Consider checking your Rust installation"
   exit 1
 fi
 # check for clippy
 cargo list | grep clippy &> /dev/null
 if [[ "$?" == 1 ]]; then
-  error "\n❌ Require clippy..."
+  error "🤔 Require clippy..."
   echo "Install clippy: rustup update && rustup component add clippy"
   echo "See more: https://github.com/rust-lang/rust-clippy"
   exit 1
 fi
 # run clippy
-info "\n...🦀 Linting with clippy..."
+info "...🦀 Linting with clippy..."
 cargo clippy
 if [[ "$?" == 1 ]]; then
-  error "\n❌ Something ain't look right. Please resolve issue(s) above."
+  error "🤔 Something ain't look right. Please resolve issue(s) above."
   PASS=false
   exit 1
 fi
 
-info "\n...🦀 Formatting with rustfmt"
+info "...🦀 Formatting with rustfmt"
 cargo fmt
 if [[ "$?" == 1 ]]; then
-  error "\n❌ Something ain't look right. Please resolve issue(s) above."
+  error "🤔 Something ain't look right. Please resolve issue(s) above."
   PASS=false
   exit 1
 fi
@@ -51,7 +51,7 @@ fi
 if ! $PASS; then
   exit 1
 else
-  info "\n✔️ Loking good. Committing..."
+  info "👌 Loking good. Committing..."
 fi
 
 exit $?

@@ -17,7 +17,7 @@ declare -A formats=(\
   ['perf']="🐎 perf$base_regex"\
 );
 
-info "\n🔧 Checking git commit message format...";
+info "🔧 Checking git commit message format...";
 
 message_file=$1;
 commit_msg=`cat $message_file`;
