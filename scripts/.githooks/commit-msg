@@ -18,11 +18,10 @@ declare -A formats=(\
 );
 
 info "🔧 Checking git commit message format...";
-
+# extract message from git commit
 message_file=$1;
 commit_msg=`cat $message_file`;
-# commit_msg=$1
-
+# do the check
 match="";
 add_emoji="";
 scope="";
@@ -44,15 +43,13 @@ for type in "${!formats[@]}"; do
     break;
   fi
 done
-
-# check result
+# notify commiter
 if [[ -n $match ]]; then
   # add emoji if not already
   if [[ -n $add_emoji ]]; then
     sed -i "s/$commit_msg/$add_emoji$commit_msg/" $message_file;
   fi
   info "💪 You are a pro commiter."
-  cat $message_file;
   exit 0;
 else
   error "🤔 Commit should follow format: <type>(<scope>): <details>, where:";
