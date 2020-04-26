@@ -53,9 +53,9 @@ if [[ -n $match ]]; then
   exit 0;
 else
   error "🤔 Commit should follow format: <type>(<scope>): <details>, where:";
-  echo -e "\ttype: feat, fix, docs, style, refactor, test, chore, ci, perf";
-  echo -e "\tscope: place the commit changes";
-  echo -e "\tdetails: imperative, present tense, no end dot";
-  info "See more: https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines"
+  error -e "\ttype: feat, fix, docs, style, refactor, test, chore, ci, perf";
+  error -e "\tscope: place the commit changes";
+  error -e "\tdetails: imperative, present tense, no end dot";
+  echo "See more: https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines"
   exit 1;
 fi
