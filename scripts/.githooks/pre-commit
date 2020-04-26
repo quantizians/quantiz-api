@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# imports utils
+source scripts/utils/cecho.bash # imports functions: cecho, info, warning, error 
+
+
+# get all rust files that were staged
+# filter files that have diff and were added, copied, modified, or renamed
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep ".rs$")
+
+# skip if no diff
+if [[ "$STAGED_FILES" = "" ]]; then
+  exit 0
+fi
+
+PASS=true
+
+# --------lint & format--------
+info "🦀 Validating Rust files:"
+# check for cargo
+which cargo &> /dev/null
+if [[ "$?" == 1 ]]; then
+  error "🤔 Cargo not found. Consider checking your Rust installation"
+  exit 1
+fi
+# check for clippy
+cargo list | grep clippy &> /dev/null
+if [[ "$?" == 1 ]]; then
+  error "🤔 Require clippy..."
+  echo "Install clippy: rustup update && rustup component add clippy"
+  echo "See more: https://github.com/rust-lang/rust-clippy"
+  exit 1
+fi
+# run clippy
+info "...🦀 Linting with clippy..."
+cargo clippy
+if [[ "$?" == 1 ]]; then
+  error "🤔 Something ain't look right. Please resolve issue(s) above."
+  PASS=false
+  exit 1
+fi
+
+info "...🦀 Formatting with rustfmt"
+cargo fmt
+if [[ "$?" == 1 ]]; then
+  error "🤔 Something ain't look right. Please resolve issue(s) above."
+  PASS=false
+  exit 1
+fi
+
+if ! $PASS; then
+  exit 1
+else
+  info "👌 Loking good. Committing..."
+fi
+
+exit $?

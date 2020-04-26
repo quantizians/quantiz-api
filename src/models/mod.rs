@@ -1,2 +1,2 @@
 mod task;
-pub use task::{Task, OptionalizedTask, Priority};
+pub use task::{OptionalizedTask, Priority, Task};
