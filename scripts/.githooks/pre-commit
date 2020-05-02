@@ -20,13 +20,13 @@ info "🦀 Validating Rust files:"
 # check for cargo
 which cargo &> /dev/null
 if [[ "$?" == 1 ]]; then
-  error "🤔 Cargo not found. Consider checking your Rust installation"
+  error "❗ Cargo not found. Consider checking your Rust installation"
   exit 1
 fi
 # check for clippy
 cargo list | grep clippy &> /dev/null
 if [[ "$?" == 1 ]]; then
-  error "🤔 Require clippy..."
+  error "❗ Require clippy..."
   echo "Install clippy: rustup update && rustup component add clippy"
   echo "See more: https://github.com/rust-lang/rust-clippy"
   exit 1
@@ -35,7 +35,7 @@ fi
 info "...🦀 Linting with clippy..."
 cargo clippy
 if [[ "$?" == 1 ]]; then
-  error "🤔 Something ain't look right. Please resolve issue(s) above."
+  error "❗ Something ain't look right. Please resolve issue(s) above."
   PASS=false
   exit 1
 fi
@@ -43,7 +43,7 @@ fi
 info "...🦀 Formatting with rustfmt"
 cargo fmt
 if [[ "$?" == 1 ]]; then
-  error "🤔 Something ain't look right. Please resolve issue(s) above."
+  error "❗ Something ain't look right. Please resolve issue(s) above."
   PASS=false
   exit 1
 fi

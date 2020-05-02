@@ -5,3 +5,7 @@ script = { file = "./scripts/setup.bash" }
 [tasks.db]
 # setup postgres docker container
 script = { file = "./scripts/db.bash"}
+
+[tasks.dev]
+# run dev server and watch or changes
+script = { file = "./scripts/dev.bash"}

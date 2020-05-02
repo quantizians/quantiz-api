@@ -52,7 +52,7 @@ if [[ -n $match ]]; then
   info "💪 You are a pro commiter."
   exit 0;
 else
-  error "🤔 Commit should follow format: <type>(<scope>): <details>, where:";
+  error "❗ Commit should follow format: <type>(<scope>): <details>, where:";
   error -e "\ttype: feat, fix, docs, style, refactor, test, chore, ci, perf";
   error -e "\tscope: place the commit changes";
   error -e "\tdetails: imperative, present tense, no end dot";
