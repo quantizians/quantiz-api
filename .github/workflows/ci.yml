@@ -38,6 +38,7 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
           toolchain: nightly
+          default: true
           components: clippy
     - name: Build
       if: github.base_ref == 'develop'
