@@ -54,7 +54,7 @@ jobs:
         args: --verbose --no-fail-fast --all-features
       env:
         CARGO_INCREMENTAL: '0'
-        RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Zno-landing-pads'
+        RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests'
     - id: grcov
       if: github.event_name == 'push' && github.ref == 'master'
       name: Code coverage with grcov
