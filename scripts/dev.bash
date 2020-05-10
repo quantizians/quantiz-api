@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # imports utils
-source scripts/utils/cecho.bash # imports functions: cecho, info, warning, error 
+source scripts/utils/cecho.bash; # imports functions: cecho, info, warning, error 
 
 # yes/no confirmation input
 inquire ()  {
@@ -34,7 +34,7 @@ inquire ()  {
 which cargo &> /dev/null
 if [[ "$?" == 1 ]]; then
   error "❗ Cargo not found. Consider checking your Rust installation."
-  exit 1
+  exit 1;
 fi
 
 # check for watchexec
@@ -46,16 +46,16 @@ if [[ "$?" != 0 ]]; then
     # install watchexec
     if [[ "$OSTYPE" == "darwin"* ]]; then
       # Mac OSX
-      brew install watchexec
+      brew install watchexec;
     else
       info "Installing watchexec...";
-      cargo install watchexec
+      cargo install watchexec;
     fi
-    watchexec -r -s SIGKILL --exts rs,toml cargo run
+    watchexec -r -s SIGKILL --exts rs,toml cargo run;
   else
-    cargo run
-    warning "❗ watchexec not installed. You will have to rebuild project manually."
+    cargo run;
+    warning "❗ watchexec not installed. You will have to rebuild project manually.";
   fi
 else
-  watchexec -r -s SIGKILL --exts rs cargo run
+  watchexec -r -s SIGKILL --exts rs cargo run;
 fi
