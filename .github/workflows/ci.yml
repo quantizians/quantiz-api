@@ -2,9 +2,9 @@ name: github ci
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ master ]
+    branches: [ develop ]
 
 env:
   POSTGRES_USER: quantiz
@@ -41,11 +41,13 @@ jobs:
           components: clippy
           override: true
     - name: Build
+      if: github.ref == 'refs/heads/develop'
       uses: actions-rs/cargo@v1
       with:
         command: build
         args: --verbose
     - name: Run tests
+      if: github.ref == 'refs/heads/develop'
       uses: actions-rs/cargo@v1
       with:
         command: test
@@ -54,10 +56,15 @@ jobs:
         CARGO_INCREMENTAL: '0'
         RUSTFLAGS: '-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Zno-landing-pads'
     - id: grcov
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       name: Code coverage with grcov
       uses: actions-rs/grcov@v0.1
     - name: Upload Codecov report 
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       uses: codecov/codecov-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: ${{ steps.grcov.outputs.report }}
+
+
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
