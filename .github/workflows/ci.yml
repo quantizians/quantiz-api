@@ -40,6 +40,10 @@ jobs:
           toolchain: nightly
           default: true
           components: clippy
+    - name: Clean generated artifacts
+      uses: actions-rs/cargo@v1
+      with:
+        command: clean
     - name: Build
       if: github.base_ref == 'develop'
       uses: actions-rs/cargo@v1
