@@ -20,6 +20,9 @@ mod models;
 mod responses;
 mod routers;
 use db::DbConnection;
+use semver;
+use std::fs;
+use toml;
 
 // This macro from `diesel_migrations` defines an `embedded_migrations` module
 // containing a function named `run`. This allows the example to be run and
@@ -36,9 +39,16 @@ fn run_db_migrations(rocket: Rocket) -> Result<Rocket, Rocket> {
     }
 }
 
+fn version() -> semver::Version {
+    let cargo_toml_str = fs::read_to_string("Cargo.toml").unwrap();
+    let cargo_toml = cargo_toml_str.parse::<toml::Value>().unwrap();
+    let version_string = cargo_toml["package"]["version"].as_str().unwrap();
+    return semver::Version::parse(version_string).unwrap();
+}
+
 fn rocket() -> Rocket {
-    let api_version = std::env::var("API_VERSION").expect("invalid API version");
-    let server_root = format!("/api/{}", api_version);
+    let api_version = version();
+    let server_root = format!("/api/v{}", api_version.major);
     return rocket::ignite()
         .attach(DbConnection::fairing())
         .attach(AdHoc::on_attach("Database Migrations", run_db_migrations))
